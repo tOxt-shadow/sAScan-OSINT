@@ -1,0 +1,290 @@
+{
+  "version": 3,
+  "updated": "2026-10-25",
+  "sites": [
+    {
+      "name": "GitHub",
+      "kind": "developer",
+      "category": "Development",
+      "url": "https://github.com/{account}",
+      "found_status": [
+        200
+      ],
+      "absent_status": [
+        404
+      ],
+      "blocked_markers": [
+        "rate limit exceeded"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "GitLab",
+      "kind": "developer",
+      "category": "Development",
+      "url": "https://gitlab.com/{account}",
+      "found_status": [
+        200
+      ],
+      "absent_status": [
+        404
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Codeberg",
+      "kind": "developer",
+      "category": "Development",
+      "url": "https://codeberg.org/{account}",
+      "found_status": [
+        200
+      ],
+      "absent_status": [
+        404
+      ],
+      "enabled": true
+    },
+    {
+      "name": "PyPI",
+      "kind": "developer",
+      "category": "Development",
+      "url": "https://pypi.org/user/{account}/",
+      "found_status": [
+        200
+      ],
+      "absent_status": [
+        404
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Dev.to",
+      "kind": "developer",
+      "category": "Technical writing",
+      "url": "https://dev.to/{account}",
+      "found_status": [
+        200
+      ],
+      "absent_status": [
+        404
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Telegram",
+      "kind": "social",
+      "category": "Social",
+      "url": "https://t.me/{account}",
+      "found_status": [
+        200
+      ],
+      "absent_status": [
+        404
+      ],
+      "present_markers": [
+        "tgme_page_title"
+      ],
+      "missing_is_absent": true,
+      "enabled": true
+    },
+    {
+      "name": "Instagram",
+      "kind": "social",
+      "category": "Visual",
+      "url": "https://www.instagram.com/{account}/",
+      "found_status": [
+        200
+      ],
+      "absent_status": [
+        404
+      ],
+      "blocked_markers": [
+        "login • instagram",
+        "log in to instagram"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "TikTok",
+      "kind": "social",
+      "category": "Video",
+      "url": "https://www.tiktok.com/@{account}",
+      "found_status": [
+        200
+      ],
+      "absent_status": [
+        404
+      ],
+      "blocked_markers": [
+        "captcha",
+        "access denied",
+        "please verify",
+        "verify to continue"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "X (Twitter)",
+      "kind": "social",
+      "category": "Social",
+      "url": "https://x.com/{account}",
+      "found_status": [
+        200
+      ],
+      "absent_status": [
+        404
+      ],
+      "blocked_markers": [
+        "javascript is not available",
+        "log in to x",
+        "something went wrong"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Pinterest",
+      "kind": "social",
+      "category": "Visual",
+      "url": "https://www.pinterest.com/{account}/",
+      "found_status": [
+        200
+      ],
+      "absent_status": [
+        404
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Reddit",
+      "kind": "social",
+      "category": "Social",
+      "url": "https://www.reddit.com/user/{account}/about.json",
+      "link": "https://www.reddit.com/user/{account}/",
+      "found_status": [
+        200
+      ],
+      "absent_status": [
+        404
+      ],
+      "blocked_markers": [
+        "blocked",
+        "whoa there, pardner"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "YouTube",
+      "kind": "video",
+      "category": "Video",
+      "url": "https://www.youtube.com/@{account}",
+      "found_status": [
+        200
+      ],
+      "absent_status": [
+        404
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Twitch",
+      "kind": "streaming",
+      "category": "Streaming",
+      "url": "https://www.twitch.tv/{account}",
+      "found_status": [
+        200
+      ],
+      "absent_status": [
+        404
+      ],
+      "present_markers": [
+        "streams live on twitch",
+        "{account} - twitch"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "SoundCloud",
+      "kind": "music",
+      "category": "Music",
+      "url": "https://soundcloud.com/{account}",
+      "found_status": [
+        200
+      ],
+      "absent_status": [
+        404
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Behance",
+      "kind": "design",
+      "category": "Design",
+      "url": "https://www.behance.net/{account}",
+      "found_status": [
+        200
+      ],
+      "absent_status": [
+        404
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Dribbble",
+      "kind": "design",
+      "category": "Design",
+      "url": "https://dribbble.com/{account}",
+      "found_status": [
+        200
+      ],
+      "absent_status": [
+        404
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Medium",
+      "kind": "writing",
+      "category": "Writing",
+      "url": "https://medium.com/@{account}",
+      "found_status": [
+        200
+      ],
+      "absent_status": [
+        404
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Steam",
+      "kind": "gaming",
+      "category": "Gaming",
+      "url": "https://steamcommunity.com/id/{account}",
+      "found_status": [
+        200
+      ],
+      "absent_status": [
+        404
+      ],
+      "absent_markers": [
+        "the specified profile could not be found"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Hacker News",
+      "kind": "community",
+      "category": "Tech community",
+      "url": "https://news.ycombinator.com/user?id={account}",
+      "found_status": [
+        200
+      ],
+      "absent_status": [
+        404
+      ],
+      "absent_markers": [
+        "no such user."
+      ],
+      "enabled": true
+    }
+  ]
+}

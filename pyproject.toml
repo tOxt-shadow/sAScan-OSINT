@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sascan"
+version = "2.0.0"
+description = "sAScan — dragon-grade digital footprint intelligence for usernames, emails and phone numbers."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "sAScan" }]
+keywords = ["osint", "cli", "username", "email", "phone", "footprint"]
+dependencies = [
+    "click>=8.1.7",
+    "rich>=13.7.0",
+    "aiohttp>=3.9.5",
+    "beautifulsoup4>=4.12.3",
+    "phonenumbers>=8.13.37",
+    "dnspython>=2.6.1",
+    "jinja2>=3.1.4",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2.0",
+    "pytest-asyncio>=0.23.7",
+]
+
+[project.scripts]
+sascan = "sascan.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["sascan*"]
+
+[tool.setuptools.package-data]
+sascan = ["data/*.json", "reports/templates/*.j2"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
