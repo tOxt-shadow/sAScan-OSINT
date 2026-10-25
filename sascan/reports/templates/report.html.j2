@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="sAScan digital footprint intelligence report for {{ result.seed.value }}">
+  <title>sAScan · {{ result.seed.value }} · Digital Footprint Report</title>
+  <link rel="preconnect" href="https://unpkg.com">
+  <style>
+    :root {
+      --bg: #07110f;
+      --bg-2: #0a1815;
+      --card: #0d1d19;
+      --card-2: #10241f;
+      --line: rgba(94, 234, 212, 0.16);
+      --line-strong: rgba(94, 234, 212, 0.34);
+      --text: #e7f7f2;
+      --muted: #8fb3aa;
+      --teal: #5eead4;
+      --green: #34d399;
+      --gold: #fbbf24;
+      --red: #fb7185;
+      --orange: #f59e0b;
+      --violet: #a78bfa;
+      --blue: #60a5fa;
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(1000px 700px at 88% -12%, rgba(52, 211, 153, 0.13), transparent 60%),
+        radial-gradient(800px 600px at -10% 10%, rgba(251, 191, 36, 0.08), transparent 55%),
+        linear-gradient(180deg, var(--bg), var(--bg-2));
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.55;
+    }
+    a { color: var(--teal); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap { width: min(1380px, calc(100% - 40px)); margin: 0 auto; }
+    .topbar {
+      position: sticky; top: 0; z-index: 30;
+      backdrop-filter: blur(18px);
+      background: rgba(7, 17, 15, 0.82);
+      border-bottom: 1px solid var(--line);
+    }
+    .topbar-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 18px; min-height: 66px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: 0.3px; }
+    .brand-mark {
+      display: grid; place-items: center; width: 38px; height: 38px;
+      border: 1px solid var(--line-strong); border-radius: 12px;
+      background: linear-gradient(145deg, rgba(94,234,212,.16), rgba(251,191,36,.08));
+      font-size: 19px;
+    }
+    .brand small { display: block; color: var(--muted); font-weight: 500; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }
+    .nav-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .btn {
+      appearance: none; cursor: pointer; border: 1px solid var(--line-strong);
+      color: var(--text); background: rgba(94,234,212,.06);
+      border-radius: 11px; padding: 8px 13px; font: inherit; font-size: 13px; font-weight: 650;
+      transition: .2s ease;
+    }
+    .btn:hover { background: rgba(94,234,212,.13); border-color: var(--teal); transform: translateY(-1px); }
+    .btn.gold { border-color: rgba(251,191,36,.4); background: rgba(251,191,36,.07); }
+    .btn.gold:hover { border-color: var(--gold); background: rgba(251,191,36,.14); }
+    .hero { padding: 52px 0 28px; }
+    .hero-card {
+      position: relative; overflow: hidden;
+      border: 1px solid var(--line); border-radius: 26px;
+      background:
+        radial-gradient(700px 400px at 95% 10%, rgba(94,234,212,.16), transparent 60%),
+        linear-gradient(150deg, rgba(13,29,25,.98), rgba(8,20,17,.96));
+      box-shadow: var(--shadow);
+      padding: 32px;
+    }
+    .hero-card::after {
+      content: "🐉"; position: absolute; right: 32px; top: 18px;
+      font-size: 82px; opacity: .09; transform: rotate(-8deg); pointer-events: none;
+    }
+    .hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) 190px; gap: 28px; align-items: center; }
+    .eyebrow { color: var(--teal); font-size: 12px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
+    h1 { margin: 10px 0 12px; font-size: clamp(30px, 5vw, 54px); line-height: 1.05; letter-spacing: -0.035em; overflow-wrap: anywhere; }
+    h1 .accent { color: var(--gold); }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 9px; color: var(--muted); font-size: 13px; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      border: 1px solid var(--line); border-radius: 999px;
+      padding: 6px 11px; background: rgba(255,255,255,.025); white-space: nowrap;
+    }
+    .pill strong { color: var(--text); font-weight: 700; }
+    .confidence { display: grid; place-items: center; text-align: center; }
+    .ring {
+      --pct: {{ result.correlation.confidence }};
+      width: 148px; height: 148px; border-radius: 50%;
+      display: grid; place-items: center; position: relative;
+      background: conic-gradient(var(--teal) calc(var(--pct) * 1%), rgba(255,255,255,.07) 0);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.04), 0 0 45px rgba(94,234,212,.12);
+    }
+    .ring::before {
+      content: ""; position: absolute; inset: 9px; border-radius: 50%;
+      background: #0a1915; border: 1px solid var(--line);
+    }
+    .ring-inner { position: relative; z-index: 1; }
+    .ring-inner strong { display: block; font-size: 35px; letter-spacing: -0.04em; }
+    .ring-inner span { display: block; font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); }
+    .confidence-note { margin-top: 9px; font-size: 11px; color: var(--muted); }
+
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; margin: 18px 0 0; }
+    .stat {
+      border: 1px solid var(--line); border-radius: 15px; padding: 16px;
+      background: linear-gradient(155deg, rgba(16,36,31,.92), rgba(10,24,21,.92));
+    }
+    .stat .num { font-size: 28px; font-weight: 800; letter-spacing: -0.03em; }
+    .stat .label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .12em; margin-top: 2px; }
+    .stat.found .num { color: var(--green); }
+    .stat.unknown .num { color: var(--gold); }
+    .stat.absent .num { color: var(--red); }
+    .stat.duration .num { color: var(--blue); font-size: 20px; padding-top: 7px; }
+
+    main { padding: 8px 0 70px; }
+    .grid { display: grid; grid-template-columns: minmax(0, 1.36fr) minmax(310px, .64fr); gap: 18px; align-items: start; }
+    .stack { display: grid; gap: 18px; }
+    .card {
+      border: 1px solid var(--line); border-radius: var(--radius);
+      background: linear-gradient(155deg, rgba(13,29,25,.94), rgba(9,22,19,.94));
+      box-shadow: 0 12px 36px rgba(0,0,0,.22);
+      overflow: hidden;
+    }
+    .card-head {
+      display: flex; align-items: center; justify-content: space-between; gap: 14px;
+      padding: 18px 20px; border-bottom: 1px solid var(--line);
+    }
+    .card-head h2 { margin: 0; font-size: 15px; letter-spacing: .02em; }
+    .card-head .hint { color: var(--muted); font-size: 11px; }
+    .card-body { padding: 18px 20px; }
+    #graph { height: 520px; background: radial-gradient(circle at 50% 50%, rgba(94,234,212,.05), transparent 65%); }
+    .graph-toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .graph-toolbar .btn { padding: 5px 9px; font-size: 11px; }
+    .legend { display: flex; gap: 12px; flex-wrap: wrap; padding: 0 20px 16px; color: var(--muted); font-size: 11px; }
+    .legend i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+    .legend .seed { background: var(--gold); }
+    .legend .username { background: var(--teal); }
+    .legend .email { background: var(--green); }
+    .legend .phone { background: var(--violet); }
+    .legend .platform { background: var(--blue); }
+    .legend .candidate { background: #94a3b8; }
+    .legend .lead { background: var(--orange); }
+
+    .identity-list { display: grid; gap: 12px; }
+    .identity-group h3 { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0 0 7px; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+    .identity-group h3 span { color: var(--text); font-size: 11px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      max-width: 100%; padding: 6px 9px; border-radius: 9px;
+      border: 1px solid var(--line); background: rgba(255,255,255,.025);
+      color: var(--text); font-size: 12px; overflow-wrap: anywhere;
+    }
+    .chip.teal { border-color: rgba(94,234,212,.32); color: var(--teal); }
+    .chip.green { border-color: rgba(52,211,153,.3); color: var(--green); }
+    .chip.violet { border-color: rgba(167,139,250,.3); color: var(--violet); }
+    .chip.gray { color: var(--muted); }
+    .empty { color: var(--muted); font-size: 12px; }
+
+    .profile-name { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+    .profile-bio { color: var(--muted); font-size: 13px; margin-top: 7px; }
+    .profile-facts { display: grid; gap: 9px; margin-top: 16px; }
+    .fact { display: flex; justify-content: space-between; gap: 14px; border-top: 1px solid var(--line); padding-top: 9px; font-size: 12px; }
+    .fact .k { color: var(--muted); }
+    .fact .v { text-align: right; overflow-wrap: anywhere; }
+
+    .section { margin-top: 22px; }
+    .section-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; flex-wrap: wrap; margin-bottom: 14px; }
+    .section-head h2 { margin: 0; font-size: 22px; letter-spacing: -0.02em; }
+    .section-head p { margin: 4px 0 0; color: var(--muted); font-size: 12px; }
+    .filters { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .filter {
+      cursor: pointer; border: 1px solid var(--line); border-radius: 999px;
+      padding: 6px 11px; font: inherit; font-size: 12px; font-weight: 650;
+      background: transparent; color: var(--muted);
+    }
+    .filter:hover { color: var(--text); border-color: var(--line-strong); }
+    .filter.active { color: #06120f; background: var(--teal); border-color: var(--teal); }
+    .search {
+      min-width: 220px; flex: 1; max-width: 360px;
+      background: rgba(255,255,255,.035); color: var(--text);
+      border: 1px solid var(--line-strong); border-radius: 10px;
+      padding: 8px 11px; font: inherit; font-size: 13px; outline: none;
+    }
+    .search:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(94,234,212,.1); }
+    .table-wrap { overflow: auto; border: 1px solid var(--line); border-radius: var(--radius); background: rgba(7,17,15,.5); }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 900px; }
+    thead th {
+      position: sticky; top: 0; z-index: 2;
+      text-align: left; padding: 12px 14px; background: #0b1b17;
+      border-bottom: 1px solid var(--line-strong); color: var(--muted);
+      font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+    }
+    tbody td { padding: 11px 14px; border-bottom: 1px solid rgba(94,234,212,.075); vertical-align: top; }
+    tbody tr:hover { background: rgba(94,234,212,.035); }
+    tbody tr:last-child td { border-bottom: 0; }
+    .platform { font-weight: 700; color: var(--text); white-space: nowrap; }
+    .detail { color: var(--muted); max-width: 470px; overflow-wrap: anywhere; }
+    .status {
+      display: inline-flex; align-items: center; gap: 6px; border-radius: 999px;
+      padding: 4px 8px; font-size: 10px; font-weight: 800; letter-spacing: .08em;
+    }
+    .status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .status.found { color: var(--green); background: rgba(52,211,153,.1); border: 1px solid rgba(52,211,153,.25); }
+    .status.absent { color: var(--red); background: rgba(251,113,133,.08); border: 1px solid rgba(251,113,133,.2); }
+    .status.unknown { color: var(--gold); background: rgba(251,191,36,.08); border: 1px solid rgba(251,191,36,.22); }
+    .conf { min-width: 76px; }
+    .conf-bar { height: 5px; border-radius: 99px; background: rgba(255,255,255,.08); overflow: hidden; margin-top: 4px; }
+    .conf-bar span { display: block; height: 100%; border-radius: inherit; background: var(--teal); width: {{ 0 }}%; }
+    .source { color: var(--muted); font-size: 11px; white-space: nowrap; }
+    .table-count { color: var(--muted); font-size: 11px; }
+    .hidden { display: none !important; }
+
+    .notification { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; background: rgba(255,255,255,.022); margin-top: 12px; }
+    .notification h3 { margin: 0 0 6px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+    .notification p { margin: 0; color: var(--muted); font-size: 12px; }
+    .notification.error { border-color: rgba(251,113,133,.28); }
+    .notification.error h3 { color: var(--red); }
+    .notification.note h3 { color: var(--gold); }
+    .notification ul { margin: 4px 0 0; padding-left: 18px; color: var(--muted); font-size: 12px; }
+    .notification li + li { margin-top: 4px; }
+    footer { border-top: 1px solid var(--line); padding: 24px 0 32px; color: var(--muted); font-size: 11px; }
+    .footer-inner { display: flex; gap: 16px; justify-content: space-between; flex-wrap: wrap; align-items: center; }
+    .footer-inner > span { flex: 1 1 320px; min-width: 0; overflow-wrap: anywhere; }
+    .toast {
+      position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(18px);
+      background: #0f2a23; color: var(--text); border: 1px solid var(--line-strong);
+      border-radius: 10px; padding: 9px 14px; font-size: 12px; opacity: 0;
+      pointer-events: none; transition: .25s ease; z-index: 50;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    @media (max-width: 1040px) {
+      .grid { grid-template-columns: 1fr; }
+      #graph { height: 440px; }
+    }
+    @media (max-width: 720px) {
+      .wrap { width: min(100% - 24px, 1380px); }
+      .hero { padding-top: 28px; }
+      .hero-card { padding: 22px; border-radius: 20px; }
+      .hero-grid { grid-template-columns: 1fr; }
+      .confidence { justify-items: start; }
+      .ring { width: 120px; height: 120px; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .topbar-inner { align-items: flex-start; padding: 12px 0; }
+      .nav-actions .btn span.long { display: none; }
+      .search { max-width: none; }
+    }
+    @media print {
+      body { background: white; color: #111; }
+      .topbar, .filters, .search, .graph-toolbar, .btn, .toast { display: none !important; }
+      .hero-card, .card, .stat, .table-wrap { box-shadow: none; border-color: #ddd; background: white; }
+      .muted, .hint, .detail, .source { color: #555 !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">🐉</div>
+        <div>sAScan<small>Digital Footprint Intelligence</small></div>
+      </div>
+      <div class="nav-actions">
+        <button class="btn" id="copy-target" type="button">Copy target</button>
+        <button class="btn gold" id="download-json" type="button">Download JSON</button>
+        <button class="btn" onclick="window.print()" type="button">Print</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <section class="hero">
+      <div class="hero-card">
+        <div class="hero-grid">
+          <div>
+            <div class="eyebrow">Digital footprint report</div>
+            <h1><span class="accent">{{ result.seed.value }}</span></h1>
+            <div class="hero-meta">
+              <span class="pill">Seed <strong>{{ result.seed.kind.label }}</strong></span>
+              <span class="pill">Engines <strong>{{ result.engines|join(", ") }}</strong></span>
+              <span class="pill">{{ result.stats.checked }} checks</span>
+              <span class="pill">{{ result.duration_display }}</span>
+              <span class="pill">{{ generated_at }}</span>
+            </div>
+            <div class="stats" aria-label="Scan statistics">
+              <div class="stat found"><div class="num">{{ result.stats.found }}</div><div class="label">Found</div></div>
+              <div class="stat unknown"><div class="num">{{ result.stats.unknown }}</div><div class="label">Inconclusive</div></div>
+              <div class="stat absent"><div class="num">{{ result.stats.absent }}</div><div class="label">Absent</div></div>
+              <div class="stat duration"><div class="num">{{ result.stats.platforms_found }}</div><div class="label">Platforms found</div></div>
+            </div>
+          </div>
+          <div class="confidence">
+            <div class="ring"><div class="ring-inner"><strong>{{ result.correlation.confidence }}%</strong><span>Confidence</span></div></div>
+            <div class="confidence-note">evidence-based, not absolute</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <main>
+      <div class="grid">
+        <section class="card">
+          <div class="card-head">
+            <div>
+              <h2>Identity graph</h2>
+              <div class="hint">Drag to explore · double-click a platform to open it</div>
+            </div>
+            <div class="graph-toolbar">
+              <button class="btn" id="physics-toggle" type="button">Freeze layout</button>
+              <button class="btn" id="fit-graph" type="button">Fit</button>
+            </div>
+          </div>
+          <div id="graph" role="img" aria-label="Identity correlation graph"></div>
+          <div class="legend">
+            <span><i class="seed"></i>Seed</span>
+            <span><i class="username"></i>Username</span>
+            <span><i class="email"></i>Email</span>
+            <span><i class="phone"></i>Phone</span>
+            <span><i class="platform"></i>Platform</span>
+            <span><i class="candidate"></i>Candidate</span>
+            <span><i class="lead"></i>Lead</span>
+          </div>
+        </section>
+
+        <div class="stack">
+          {% if result.correlation.profile %}
+          <section class="card">
+            <div class="card-head"><h2>Public profile signal</h2><span class="hint">Gravatar</span></div>
+            <div class="card-body">
+              <div class="profile-name">{{ result.correlation.profile.display_name or "Public profile" }}</div>
+              {% if result.correlation.profile.about_me %}
+              <div class="profile-bio">{{ result.correlation.profile.about_me }}</div>
+              {% endif %}
+              <div class="profile-facts">
+                {% if result.correlation.profile.location %}<div class="fact"><span class="k">Location</span><span class="v">{{ result.correlation.profile.location }}</span></div>{% endif %}
+                {% if result.correlation.profile.job_title %}<div class="fact"><span class="k">Job</span><span class="v">{{ result.correlation.profile.job_title }}</span></div>{% endif %}
+                {% if result.correlation.profile.company %}<div class="fact"><span class="k">Company</span><span class="v">{{ result.correlation.profile.company }}</span></div>{% endif %}
+                {% if result.correlation.profile.profile_url %}<div class="fact"><span class="k">Profile</span><span class="v"><a href="{{ result.correlation.profile.profile_url }}" target="_blank" rel="noopener noreferrer">Open Gravatar</a></span></div>{% endif %}
+              </div>
+            </div>
+          </section>
+          {% endif %}
+
+          <section class="card">
+            <div class="card-head"><h2>Unified identifiers</h2><span class="hint">{{ (result.correlation.usernames|length) + (result.correlation.emails|length) + (result.correlation.phones|length) }} confirmed</span></div>
+            <div class="card-body identity-list">
+              <div class="identity-group">
+                <h3>Usernames <span>{{ result.correlation.usernames|length }}</span></h3>
+                <div class="chips">
+                  {% for value in result.correlation.usernames %}
+                  <span class="chip teal">{{ value }}</span>
+                  {% else %}<span class="empty">None discovered</span>{% endfor %}
+                </div>
+              </div>
+              <div class="identity-group">
+                <h3>Emails <span>{{ result.correlation.emails|length }}</span></h3>
+                <div class="chips">
+                  {% for value in result.correlation.emails %}
+                  <span class="chip green">{{ value }}</span>
+                  {% else %}<span class="empty">None discovered</span>{% endfor %}
+                </div>
+              </div>
+              <div class="identity-group">
+                <h3>Phones <span>{{ result.correlation.phones|length }}</span></h3>
+                <div class="chips">
+                  {% for value in result.correlation.phones %}
+                  <span class="chip violet">{{ value }}</span>
+                  {% else %}<span class="empty">None discovered</span>{% endfor %}
+                </div>
+              </div>
+              {% if result.correlation.candidates %}
+              <div class="identity-group">
+                <h3>Derived candidates <span>{{ result.correlation.candidates|length }}</span></h3>
+                <div class="chips">
+                  {% for candidate in result.correlation.candidates %}
+                  <span class="chip gray">{{ candidate.value }} · {{ candidate.confidence }}% · {{ "scanned" if candidate.scanned else "not scanned" }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+              {% endif %}
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-head"><h2>Correlation summary</h2></div>
+            <div class="card-body">
+              <p style="margin:0;color:var(--muted);font-size:13px;">{{ result.correlation.summary }}</p>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <section class="section" id="findings">
+        <div class="section-head">
+          <div>
+            <h2>All findings</h2>
+            <p>Remote checks are evidence, not ownership proof. Verify high-impact claims manually.</p>
+          </div>
+          <div class="filters">
+            <button class="filter active" data-filter="all" type="button">All · {{ result.stats.checked }}</button>
+            <button class="filter" data-filter="found" type="button">Found · {{ result.stats.found }}</button>
+            <button class="filter" data-filter="unknown" type="button">Inconclusive · {{ result.stats.unknown }}</button>
+            <button class="filter" data-filter="absent" type="button">Absent · {{ result.stats.absent }}</button>
+            <input class="search" id="table-search" type="search" placeholder="Search platform, source, detail…" aria-label="Search findings">
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Verdict</th>
+                <th>Platform</th>
+                <th>Category</th>
+                <th>Source</th>
+                <th>Confidence</th>
+                <th>Evidence</th>
+              </tr>
+            </thead>
+            <tbody id="findings-body">
+              {% for f in result.findings %}
+              <tr data-verdict="{{ f.verdict.value }}">
+                <td><span class="status {{ f.verdict.value }}">{{ f.verdict.label }}</span></td>
+                <td class="platform">{{ f.platform }}</td>
+                <td class="source">{{ f.category }}</td>
+                <td class="source">{{ f.source }}</td>
+                <td class="conf">
+                  <span>{{ f.confidence }}%</span>
+                  <div class="conf-bar"><span style="width: {{ f.confidence }}%"></span></div>
+                </td>
+                <td class="detail">
+                  {{ f.detail }}
+                  {% if f.url %}<br><a href="{{ f.url }}" target="_blank" rel="noopener noreferrer">Open source ↗</a>{% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <div id="table-empty" class="card-body hidden">No findings match the current filter.</div>
+        </div>
+        <div class="table-count" id="table-count" style="margin-top:8px;">Showing {{ result.findings|length }} of {{ result.findings|length }} findings</div>
+      </section>
+
+      {% if result.errors %}
+      <section class="notification error">
+        <h3>Engine errors</h3>
+        <ul>{% for error in result.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+      </section>
+      {% endif %}
+
+      {% if result.notes %}
+      <section class="notification note">
+        <h3>Analyst notes</h3>
+        <ul>{% for note in result.notes %}<li>{{ note }}</li>{% endfor %}</ul>
+      </section>
+      {% endif %}
+    </main>
+
+    <footer>
+      <div class="footer-inner">
+        <span><strong style="color:var(--teal)">sAScan</strong> v{{ version }} · stateless · report generated {{ generated_at }}</span>
+        <span>Scan your own footprint or obtain explicit permission. Correlated links are leads, not proof.</span>
+      </div>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script id="sascan-data" type="application/json">{{ sascan_json|safe }}</script>
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <script>
+    (() => {
+      const data = JSON.parse(document.getElementById("sascan-data").textContent);
+      const toast = (message) => {
+        const el = document.getElementById("toast");
+        el.textContent = message;
+        el.classList.add("show");
+        clearTimeout(el._timer);
+        el._timer = setTimeout(() => el.classList.remove("show"), 1800);
+      };
+
+      // Copy target
+      document.getElementById("copy-target").addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(data.seed.value);
+          toast("Target copied");
+        } catch {
+          toast("Clipboard unavailable");
+        }
+      });
+
+      // Download raw JSON
+      document.getElementById("download-json").addEventListener("click", () => {
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `sascan_${data.seed.kind}_${data.seed.value.replace(/[^A-Za-z0-9._-]+/g, "_")}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        toast("JSON exported");
+      });
+
+      // Findings filters + search
+      const rows = Array.from(document.querySelectorAll("#findings-body tr"));
+      const buttons = Array.from(document.querySelectorAll(".filter"));
+      const search = document.getElementById("table-search");
+      const count = document.getElementById("table-count");
+      const empty = document.getElementById("table-empty");
+      let activeFilter = "all";
+
+      const applyFilters = () => {
+        const query = search.value.trim().toLowerCase();
+        let visible = 0;
+        rows.forEach((row) => {
+          const verdictMatch = activeFilter === "all" || row.dataset.verdict === activeFilter;
+          const textMatch = !query || row.textContent.toLowerCase().includes(query);
+          const show = verdictMatch && textMatch;
+          row.classList.toggle("hidden", !show);
+          if (show) visible += 1;
+        });
+        count.textContent = `Showing ${visible} of ${rows.length} findings`;
+        empty.classList.toggle("hidden", visible !== 0);
+      };
+
+      buttons.forEach((button) => button.addEventListener("click", () => {
+        activeFilter = button.dataset.filter;
+        buttons.forEach((b) => b.classList.toggle("active", b === button));
+        applyFilters();
+      }));
+      search.addEventListener("input", applyFilters);
+
+      // Identity graph
+      const container = document.getElementById("graph");
+      const graph = data.correlation.graph || { nodes: [], edges: [] };
+      if (!window.vis || !graph.nodes.length) {
+        container.innerHTML = '<div style="padding:30px;color:#8fb3aa">Graph library unavailable or no confirmed nodes. The report still contains all textual evidence.</div>';
+        return;
+      }
+      const nodes = new vis.DataSet(graph.nodes);
+      const edges = new vis.DataSet(graph.edges);
+      const groups = {
+        seed: { color: { background: "#fbbf24", border: "#fde68a" }, font: { color: "#fff7d6" }, shape: "hexagon", size: 26, borderWidth: 2 },
+        username: { color: { background: "#5eead4", border: "#99f6e4" }, font: { color: "#d7fff8" }, shape: "dot", size: 19 },
+        email: { color: { background: "#34d399", border: "#86efac" }, font: { color: "#dcfce7" }, shape: "diamond", size: 22 },
+        phone: { color: { background: "#a78bfa", border: "#c4b5fd" }, font: { color: "#ede9fe" }, shape: "diamond", size: 22 },
+        platform: { color: { background: "#60a5fa", border: "#93c5fd" }, font: { color: "#dbeafe" }, shape: "box", size: 17, borderWidth: 1 },
+        candidate: { color: { background: "#64748b", border: "#94a3b8" }, font: { color: "#cbd5e1" }, shape: "dot", size: 14, borderWidth: 1 },
+        lead: { color: { background: "#f59e0b", border: "#fcd34d" }, font: { color: "#fef3c7" }, shape: "box", size: 13, borderWidth: 1 }
+      };
+      const options = {
+        autoResize: true,
+        groups,
+        nodes: { borderWidth: 1, font: { face: "ui-sans-serif, system-ui", size: 13 }, shadow: { enabled: true, color: "rgba(0,0,0,.35)", size: 8, x: 0, y: 3 } },
+        edges: {
+          color: { color: "rgba(148,163,184,.36)", highlight: "#5eead4", hover: "#5eead4" },
+          font: { color: "#8fb3aa", size: 10, strokeWidth: 3, strokeColor: "#07110f" },
+          smooth: { type: "dynamic" },
+          arrows: { to: { enabled: true, scaleFactor: 0.55 } }
+        },
+        physics: { stabilization: { iterations: 180 }, barnesHut: { gravitationalConstant: -6500, springLength: 130, springConstant: 0.035, damping: 0.15 } },
+        interaction: { hover: true, tooltipDelay: 220, navigationButtons: false, keyboard: false }
+      };
+      const network = new vis.Network(container, { nodes, edges }, options);
+      network.once("stabilizationIterationsDone", () => network.fit({ animation: { duration: 650, easingFunction: "easeInOutQuad" } }));
+      network.on("doubleClick", (params) => {
+        if (!params.nodes.length) return;
+        const node = nodes.get(params.nodes[0]);
+        if (node && node.url) {
+          window.open(node.url, "_blank", "noopener,noreferrer");
+        }
+      });
+
+      let physicsOn = true;
+      document.getElementById("physics-toggle").addEventListener("click", (event) => {
+        physicsOn = !physicsOn;
+        network.setOptions({ physics: { enabled: physicsOn } });
+        event.currentTarget.textContent = physicsOn ? "Freeze layout" : "Unfreeze layout";
+      });
+      document.getElementById("fit-graph").addEventListener("click", () => network.fit({ animation: true }));
+    })();
+  </script>
+</body>
+</html>

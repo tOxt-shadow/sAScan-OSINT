@@ -10,8 +10,8 @@ dist/
 .venv/
 venv/
 
-# Reports and local output
-reports/
+# Reports and local output (root-level scans only)
+/reports/
 *.html
 
 # Test / tooling caches
