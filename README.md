@@ -1,5 +1,11 @@
 # sAScan 🐉 — dragon-grade digital footprint intelligence
 
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Stateless](https://img.shields.io/badge/storage-stateless-6f42c1.svg)](#design-boundaries)
+[![Domain: OSINT](https://img.shields.io/badge/domain-OSINT-0b7285.svg)](#how-it-works)
+[![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey.svg)](#installation)
+
 **sAScan** is a stateless command-line OSINT tool that unifies username, email and phone reconnaissance into a single live footprint model. It combines a fast native engine with optional adapters for [Sherlock](https://github.com/sherlock-project/sherlock), [Holehe](https://github.com/megadose/holehe) and [PhoneInfoga](https://github.com/sundowndev/phoneinfoga), correlates discovered identifiers, and opens an interactive HTML report.
 
 No SQLite. No account history. No scan database. Every run is independent.
@@ -199,7 +205,7 @@ Deep mode has no automatic follow-up for username or phone seeds because there i
 
 ### HTML
 
-The report is a single portable HTML file with embedded data and a CDN-loaded vis-network graph. It includes:
+The report is a single portable HTML file with embedded data. The identity graph is drawn with a pinned `vis-network` build loaded from unpkg with Subresource Integrity (SHA-384), so the browser refuses any tampered or silently upgraded script. Fully offline viewing shows every table and section; only the graph needs the library, which browsers cache after the first open. It includes:
 
 - Target, seed kind, engines, duration and confidence.
 - Found / inconclusive / absent statistics.
@@ -240,6 +246,8 @@ sascan/
 ├── requirements.txt
 ├── requirements-dev.txt
 ├── README.md
+├── LICENSE
+├── SECURITY.md
 ├── reports/                    # generated HTML reports (gitignored)
 ├── sascan/
 │   ├── __main__.py

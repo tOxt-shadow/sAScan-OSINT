@@ -24,7 +24,9 @@ class GravatarResult:
 
 
 def gravatar_hash(email: str) -> str:
-    return hashlib.md5(email.strip().lower().encode("utf-8")).hexdigest()
+    # MD5 is mandated by the Gravatar protocol, not used as a security primitive.
+    digest = hashlib.md5(email.strip().lower().encode("utf-8"), usedforsecurity=False)
+    return digest.hexdigest()
 
 
 def _first(payload: dict[str, Any], *keys: str) -> str:

@@ -49,7 +49,7 @@ def detected_phone_region(value: str, fallback: str) -> str:
             code = phonenumbers.region_code_for_number(parsed)
             if code:
                 return code.upper()
-        except Exception:
+        except Exception:  # nosec B110 - unparsable numbers fall back to the hint
             pass
     return fallback.upper()
 

@@ -479,7 +479,9 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script id="sascan-data" type="application/json">{{ sascan_json|safe }}</script>
-  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <script src="https://unpkg.com/vis-network@10.1.3/standalone/umd/vis-network.min.js"
+          integrity="sha384-SCaI4C7bGVVmvoL6+G+fxA7Y7qmBB5cqLmXKG35zEF0zNWl+3keQG7Rp5NGvrSbN"
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script>
     (() => {
       const data = JSON.parse(document.getElementById("sascan-data").textContent);

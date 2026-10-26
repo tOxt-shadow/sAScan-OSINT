@@ -59,7 +59,7 @@ def _dns_lookup(email: str, timeout: float) -> dict[str, Any]:
             if text.lower().startswith("v=spf1"):
                 info["spf"] = text
                 break
-    except Exception:
+    except Exception:  # nosec B110 - a missing SPF record is a valid result
         pass
 
     try:
@@ -69,7 +69,7 @@ def _dns_lookup(email: str, timeout: float) -> dict[str, Any]:
             if text.lower().startswith("v=dmarc1"):
                 info["dmarc"] = text
                 break
-    except Exception:
+    except Exception:  # nosec B110 - a missing DMARC record is a valid result
         pass
     return info
 

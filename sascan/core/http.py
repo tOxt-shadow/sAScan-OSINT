@@ -114,8 +114,10 @@ class AsyncHttpClient:
             started = time.perf_counter()
             async with self._semaphore:
                 try:
-                    assert self._session is not None
-                    async with self._session.request(
+                    session = self._session
+                    if session is None:  # pragma: no cover - defensive
+                        raise RuntimeError("HTTP session was not initialised")
+                    async with session.request(
                         method,
                         url,
                         allow_redirects=allow_redirects,

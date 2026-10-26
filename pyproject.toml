@@ -20,6 +20,25 @@ dependencies = [
     "dnspython>=2.6.1",
     "jinja2>=3.1.4",
 ]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+]
+
+[project.urls]
+Homepage = "https://github.com/tOxt-shadow/sAScan-OSINT"
+Repository = "https://github.com/tOxt-shadow/sAScan-OSINT"
+Issues = "https://github.com/tOxt-shadow/sAScan-OSINT/issues"
+Changelog = "https://github.com/tOxt-shadow/sAScan-OSINT/releases"
 
 [project.optional-dependencies]
 dev = [
